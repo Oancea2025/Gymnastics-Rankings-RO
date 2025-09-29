@@ -63,14 +63,14 @@
 </section>
 
 <section class="card">
-  <h3>Upload to this category</h3>
+  <h3>{{ t("Upload to this category") }}</h3>
   <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data" class="form">
     <input type="hidden" name="category_slug" value="{{ cat.slug }}">
-    <label>Password</label>
+    <label>{{ t("Password") }}</label>
     <input type="password" name="password" placeholder="Password">
-    <label>File (CSV or XLSX)</label>
+    <label>{{ t("File (CSV or XLSX)") }}</label>
     <input type="file" name="file" accept=".csv, .xlsx">
-    <button class="btn btn-primary" type="submit">Upload</button>
+    <button class="btn btn-primary" type="submit">{{ t("Upload") }}</button>
   </form>
   <p class="muted" style="margin-top:8px">Headers required: POSITION, COMPETITOR, CLUB, EXECUTION, ARTISTRY, DIFFICULTY, LINE PENALTY, CHAIR PENALTY, DIFF PENALTY, TOTAL.</p>
 </section>

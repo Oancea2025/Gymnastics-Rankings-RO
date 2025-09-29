@@ -480,3 +480,57 @@ def settings_rename_category():
     finally:
         s.close()
     return redirect(url_for("settings_page"))
+
+
+# --- Simple i18n ---
+from flask import make_response, g
+
+I18N = {
+    "en": {
+        "Upload": "Upload",
+        "Settings": "Settings",
+        "Privacy": "Privacy",
+        "Terms": "Terms",
+        "Date": "Date",
+        "Location": "Location",
+        "Upload to this category": "Upload to this category",
+        "Password": "Password",
+        "File (CSV or XLSX)": "File (CSV or XLSX)",
+        "Headers required": "Headers required",
+        "Delete file (all rows)": "Delete file (all rows)",
+        "Delete CATEGORY (permanent)": "Delete CATEGORY (permanent)",
+    },
+    "ro": {
+        "Upload": "Incarca",
+        "Settings": "Setari",
+        "Privacy": "Confidentialitate",
+        "Terms": "Termeni",
+        "Date": "Data",
+        "Location": "Locatie",
+        "Upload to this category": "Incarca in aceasta categorie",
+        "Password": "Parola",
+        "File (CSV or XLSX)": "Fisier (CSV sau XLSX)",
+        "Headers required": "Header-e necesare",
+        "Delete file (all rows)": "Sterge fisierul (toate randurile)",
+        "Delete CATEGORY (permanent)": "Sterge CATEGORIA (definitiv)",
+    },
+}
+
+def get_lang():
+    code = request.cookies.get("lang", "en")
+    return "ro" if code == "ro" else "en"
+
+@app.context_processor
+def inject_i18n():
+    code = get_lang()
+    def t(key):
+        return I18N.get(code, I18N["en"]).get(key, key)
+    return {"t": t, "lang_code": code}
+
+@app.route("/set-lang/<code>")
+def set_lang(code):
+    code = "ro" if code == "ro" else "en"
+    nxt = request.args.get("next") or request.referrer or url_for("home")
+    resp = make_response(redirect(nxt))
+    resp.set_cookie("lang", code, max_age=60*60*24*365)  # 1 an
+    return resp

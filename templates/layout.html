@@ -15,21 +15,21 @@
         <h1>🏆 {{ settings.get('title','National Gymnastics Rankings – Romania') }}</h1>
         <p class="subtitle">{{ settings.get('subtitle','Official RENC') }}</p>
         <p class="meta">
-          <strong>Date:</strong> {{ settings.get('event_date','') or '—' }}
+          <strong>{{ t("Date") }}:</strong> {{ settings.get('event_date','') or '—' }}
           &nbsp;&nbsp;
-          <strong>Location:</strong> {{ settings.get('location','') or '—' }}
+          <strong>{{ t("Location") }}:</strong> {{ settings.get('location','') or '—' }}
         </p>
       </div>
-      <div class="lang">
-        <a class="chip chip-active" href="#">EN</a>
-        <a class="chip" href="#">RO</a>
-      </div>
+      {{ "" }}<div class="lang">
+  <a class="chip {{ "chip-active" if lang_code=="en" else "" }}" href="{{ url_for('set_lang', code='en', next=request.full_path) }}">EN</a>
+  <a class="chip {{ "chip-active" if lang_code=="ro" else "" }}" href="{{ url_for('set_lang', code='ro', next=request.full_path) }}">RO</a>
+</div>
     </div>
     <div class="actions">
-      <a class="btn btn-primary" href="{{ url_for('upload') }}">Upload</a>
-      <a class="btn" href="{{ url_for('settings_page') }}">Settings</a>
-      <a class="btn" href="{{ url_for('privacy') }}">Privacy</a>
-      <a class="btn" href="{{ url_for('terms') }}">Terms</a>
+      <a class="btn btn-primary" href="{{ url_for('upload') }}">{{ t("Upload") }}</a>
+      <a class="btn" href="{{ url_for('settings_page') }}">{{ t("Settings") }}</a>
+      <a class="btn" href="{{ url_for('privacy') }}">{{ t("Privacy") }}</a>
+      <a class="btn" href="{{ url_for('terms') }}">{{ t("Terms") }}</a>
     </div>
   </header>
 
@@ -56,8 +56,8 @@
       </a>
     </div>
     <div class="links">
-      <a href="{{ url_for('privacy') }}">Privacy</a> ·
-      <a href="{{ url_for('terms') }}">Terms</a>
+      <a href="{{ url_for('privacy') }}">{{ t("Privacy") }}</a> ·
+      <a href="{{ url_for('terms') }}">{{ t("Terms") }}</a>
     </div>
   </footer>
 

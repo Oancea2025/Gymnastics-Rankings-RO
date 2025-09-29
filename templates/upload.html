@@ -8,14 +8,14 @@
   <h2>Upload Results (CSV or XLSX)</h2>
   <p class="muted">Required columns (exact header names): <strong>POSITION, COMPETITOR, CLUB, EXECUTION, ARTISTRY, DIFFICULTY, LINE PENALTY, CHAIR PENALTY, DIFF PENALTY, TOTAL</strong>.</p>
   <form method="post" enctype="multipart/form-data" class="form">
-    <label>Password</label>
+    <label>{{ t("Password") }}</label>
     <input type="password" name="password" placeholder="Password">
     <label>Category name (create or use existing)</label>
     <input type="text" name="category_name" placeholder="e.g., Individual Women – Junior">
     <div class="muted">If you came from a category page, it's preselected there. Here you can create a new one.</div>
     <label>File</label>
     <input type="file" name="file" accept=".csv, .xlsx">
-    <button class="btn btn-primary" type="submit">Upload</button>
+    <button class="btn btn-primary" type="submit">{{ t("Upload") }}</button>
   </form>
 
 <hr class="sep">
