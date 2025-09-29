@@ -32,6 +32,47 @@
       <li><a href="{{ url_for('category_page', slug=c.slug) }}">{{ c.name }}</a></li>
     {% endfor %}
   </ul>
+
+<hr class="sep">
+
+<h2>Category Manager</h2>
+<p class="muted">Aici poti sterge sau redenumi rapid categoriile existente. Actiunile cer parola de upload.</p>
+
+<form method="post" action="{{ url_for('settings_page') }}" class="form" style="margin-bottom:16px;">
+  <input type="hidden" name="action" value="add_cat">
+  <label>Adauga categorie noua</label>
+  <input type="text" name="new_category" placeholder="ex: Individual Women – Junior">
+  <label>Parola</label>
+  <input type="password" name="password" placeholder="Parola upload">
+  <button class="btn btn-primary" type="submit">Adauga</button>
+</form>
+
+<div class="cards">
+  {% for c in cats %}
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <div><strong>{{ c.name }}</strong></div>
+          <div class="muted">slug: {{ c.slug }} • randuri: {{ cat_counts.get(c.slug, 0) }}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <form method="post" action="{{ url_for('settings_rename_category') }}" class="inline-form" onsubmit="return confirm('Redenumesti aceasta categorie?');">
+            <input type="hidden" name="slug" value="{{ c.slug }}">
+            <input type="text" name="new_name" placeholder="Nume nou">
+            <input type="password" name="password" placeholder="Parola">
+            <button class="btn">Redenumeste</button>
+          </form>
+          <form method="post" action="{{ url_for('settings_delete_category') }}" class="inline-form" onsubmit="return confirm('Sigur stergi aceasta categorie si toate randurile ei?');">
+            <input type="hidden" name="slug" value="{{ c.slug }}">
+            <input type="password" name="password" placeholder="Parola">
+            <button class="btn btn-danger">Sterge</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
 </section>
 {% endblock %}
 
@@ -75,4 +116,45 @@
       </tbody>
     </table>
   </div>
+
+<hr class="sep">
+
+<h2>Category Manager</h2>
+<p class="muted">Aici poti sterge sau redenumi rapid categoriile existente. Actiunile cer parola de upload.</p>
+
+<form method="post" action="{{ url_for('settings_page') }}" class="form" style="margin-bottom:16px;">
+  <input type="hidden" name="action" value="add_cat">
+  <label>Adauga categorie noua</label>
+  <input type="text" name="new_category" placeholder="ex: Individual Women – Junior">
+  <label>Parola</label>
+  <input type="password" name="password" placeholder="Parola upload">
+  <button class="btn btn-primary" type="submit">Adauga</button>
+</form>
+
+<div class="cards">
+  {% for c in cats %}
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <div><strong>{{ c.name }}</strong></div>
+          <div class="muted">slug: {{ c.slug }} • randuri: {{ cat_counts.get(c.slug, 0) }}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <form method="post" action="{{ url_for('settings_rename_category') }}" class="inline-form" onsubmit="return confirm('Redenumesti aceasta categorie?');">
+            <input type="hidden" name="slug" value="{{ c.slug }}">
+            <input type="text" name="new_name" placeholder="Nume nou">
+            <input type="password" name="password" placeholder="Parola">
+            <button class="btn">Redenumeste</button>
+          </form>
+          <form method="post" action="{{ url_for('settings_delete_category') }}" class="inline-form" onsubmit="return confirm('Sigur stergi aceasta categorie si toate randurile ei?');">
+            <input type="hidden" name="slug" value="{{ c.slug }}">
+            <input type="password" name="password" placeholder="Parola">
+            <button class="btn btn-danger">Sterge</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
 </section>

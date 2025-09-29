@@ -299,12 +299,17 @@ def upload():
     return render_template("upload.html", settings=settings)
 
 
+
 @app.route("/settings", methods=["GET","POST"])
 def settings_page():
     settings = get_settings()
     s = SessionLocal()
     try:
         cats = s.query(Category).order_by(Category.name).all()
+        # compute counts per category
+        counts = {}
+        for c in cats:
+            counts[c.slug] = s.query(Ranking).filter_by(category_id=c.id).count()
     finally:
         s.close()
 
@@ -328,54 +333,15 @@ def settings_page():
                 s = SessionLocal()
                 try:
                     slug = slugify(name)
-                    exists_q = s.query(Category).filter_by(slug=slug).first()
-                    if not exists_q:
-                        s.add(Category(slug=slug, name=name))
-                        s.commit()
-                        flash(f"Category '{name}' added.", "success")
+                    if not s.query(Category).filter_by(slug=slug).first():
+                        s.add(Category(slug=slug, name=name)); s.commit()
+                        flash(f"Added category '{name}'.", "success")
                     else:
                         flash("Category already exists.", "error")
                 finally:
                     s.close()
-
-        elif action == "rename_cat":
-            cid = request.form.get("cat_id")
-            new_name = request.form.get("cat_new_name","").strip()
-            if cid and new_name:
-                s = SessionLocal()
-                try:
-                    cat = s.get(Category, int(cid))
-                    if cat:
-                        cat.name = new_name
-                        cat.slug = slugify(new_name)
-                        s.commit()
-                        flash("Category renamed.", "success")
-                finally:
-                    s.close()
-
-        elif action == "delete_cat":
-            cid = request.form.get("cat_id")
-            if cid:
-                s = SessionLocal()
-                try:
-                    # delete rankings first (FK)
-                    s.query(Ranking).filter_by(category_id=int(cid)).delete()
-                    s.query(Category).filter_by(id=int(cid)).delete()
-                    s.commit()
-                    flash("Category deleted.", "success")
-                finally:
-                    s.close()
-
         return redirect(url_for("settings_page"))
-
-    # GET
-    s = SessionLocal()
-    try:
-        cats = s.query(Category).order_by(Category.name).all()
-    finally:
-        s.close()
-    return render_template("settings.html", settings=settings, cats=cats)
-
+    return render_template("settings.html", settings=settings, cats=cats, cat_counts=counts)
 
 @app.route("/privacy")
 def privacy():
@@ -438,3 +404,79 @@ def delete_by_name():
     finally:
         s.close()
     return redirect(url_for("category_page", slug=slug))
+
+
+@app.route("/category/<slug>/delete-category", methods=["POST"])
+def delete_category(slug):
+    pwd = request.form.get("password","").strip()
+    if pwd != UPLOAD_PASSWORD:
+        flash("Parola incorecta.", "error")
+        return redirect(url_for("category_page", slug=slug))
+    s = SessionLocal()
+    try:
+        cat = s.query(Category).filter_by(slug=slug).first()
+        if not cat:
+            flash("Categoria nu exista.", "error")
+            return redirect(url_for("home"))
+        # sterge randurile
+        s.query(Ranking).filter_by(category_id=cat.id).delete()
+        # sterge categoria
+        name = cat.name
+        s.delete(cat)
+        s.commit()
+        flash(f"Categoria '{name}' a fost stearsa complet.", "success")
+    finally:
+        s.close()
+    return redirect(url_for("home"))
+
+
+@app.route("/settings/category/delete", methods=["POST"])
+def settings_delete_category():
+    pwd = request.form.get("password","").strip()
+    if pwd != UPLOAD_PASSWORD:
+        flash("Parola incorecta.", "error")
+        return redirect(url_for("settings_page"))
+    slug = request.form.get("slug","").strip()
+    s = SessionLocal()
+    try:
+        cat = s.query(Category).filter_by(slug=slug).first()
+        if not cat:
+            flash("Categoria nu exista.", "error")
+            return redirect(url_for("settings_page"))
+        s.query(Ranking).filter_by(category_id=cat.id).delete()
+        name = cat.name
+        s.delete(cat); s.commit()
+        flash(f"Categoria '{name}' a fost stearsa complet.", "success")
+    finally:
+        s.close()
+    return redirect(url_for("settings_page"))
+
+@app.route("/settings/category/rename", methods=["POST"])
+def settings_rename_category():
+    pwd = request.form.get("password","").strip()
+    if pwd != UPLOAD_PASSWORD:
+        flash("Parola incorecta.", "error")
+        return redirect(url_for("settings_page"))
+    slug = request.form.get("slug","").strip()
+    new_name = request.form.get("new_name","").strip()
+    if not new_name:
+        flash("Introdu un nume nou.", "error")
+        return redirect(url_for("settings_page"))
+    s = SessionLocal()
+    try:
+        cat = s.query(Category).filter_by(slug=slug).first()
+        if not cat:
+            flash("Categoria nu exista.", "error")
+            return redirect(url_for("settings_page"))
+        new_slug = slugify(new_name)
+        # check duplicate
+        if s.query(Category).filter(Category.id != cat.id, Category.slug == new_slug).first():
+            flash("Exista deja o categorie cu acest nume.", "error")
+            return redirect(url_for("settings_page"))
+        cat.name = new_name
+        cat.slug = new_slug
+        s.commit()
+        flash("Categoria a fost redenumita.", "success")
+    finally:
+        s.close()
+    return redirect(url_for("settings_page"))

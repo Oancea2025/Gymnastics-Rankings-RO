@@ -5,6 +5,13 @@
   <button type="submit" class="btn btn-danger">Sterge fisierul (toate randurile)</button>
   <span class="muted">Aceasta actiune sterge toate inregistrarile incarcate pentru aceasta categorie, ca sa poti incarca un fisier nou.</span>
 </form>
+
+<form method="post" action="{{ url_for('delete_category', slug=cat.slug) }}" onsubmit="return confirm('Sigur stergi CATEGORIA aceasta (inclusiv toate randurile)? Actiunea este definitiva.');" class="delete-form">
+  <input type="password" name="password" placeholder="Parola upload" class="pwd-input">
+  <button type="submit" class="btn btn-danger">Sterge CATEGORIA (definitiv)</button>
+</form>
+
+
 {% endif %}
 
 {% extends 'layout.html' %}

@@ -17,3 +17,7 @@ select{padding:10px;border-radius:10px;border:1px solid var(--border);background
 .delete-form .pwd-input{padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)}
 
 .sep{border:0;border-top:1px solid var(--border);margin:20px 0}
+
+.cards{display:flex;flex-direction:column;gap:8px}
+.inline-form input{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-right:6px}
+.inline-form .btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border)}
