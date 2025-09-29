@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block title %}Privacy{% endblock %}
+{% block content %}
+<nav class="top-nav"><a class="home" href="{{ url_for('home') }}">🏠 Home</a> · <a class="back" href="javascript:history.back()">← Back</a></nav>
+
+<a class="back" href="{{ url_for('home') }}">← Back</a>
+<section class="card">
+  <h2>Privacy Policy</h2>
+  <p>We process competition data (names, clubs, scores) strictly for ranking publication. For GDPR requests (access, rectification, erasure), contact the organizer shown on the event page. Data is stored in PostgreSQL (EU) and retained only for event history. A minimal cookie stores your consent preference.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block title %}Terms{% endblock %}
+{% block content %}
+<nav class="top-nav"><a class="home" href="{{ url_for('home') }}">🏠 Home</a> · <a class="back" href="javascript:history.back()">← Back</a></nav>
+
+<a class="back" href="{{ url_for('home') }}">← Back</a>
+<section class="card">
+  <h2>Terms & Conditions</h2>
+  <p>By uploading files you confirm you have the right to publish these results and that the data is accurate. The organizer may remove or correct entries that are erroneous or abusive. Upload access is protected by password; keep it confidential.</p>
+</section>
+{% endblock %}

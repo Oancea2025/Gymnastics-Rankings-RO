@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+{% block title %}{{ cat.name }}{% endblock %}
+{% block content %}
+<nav class="top-nav"><a class="home" href="{{ url_for('home') }}">🏠 Home</a> · <a class="back" href="javascript:history.back()">← Back</a></nav>
+
+<a class="back" href="{{ url_for('home') }}">← Back</a>
+<section class="card">
+  <h2>{{ cat.name }}</h2>
+  <div class="divider"></div>
+  <div class="table-wrap">
+    <table class="rank-table wide">
+  <thead>
+    <tr>
+      <th>Position</th>
+      <th>Competitor</th>
+      <th>Club</th>
+      <th>Execution</th>
+      <th>Artistry</th>
+      <th>Difficulty</th>
+      <th>Line Penalty</th>
+      <th>Chair Penalty</th>
+      <th>DIFF Penalty</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in rows %}
+      <tr>
+        <td class="pos">
+          {% if loop.index0==0 %}🥇{% elif loop.index0==1 %}🥈{% elif loop.index0==2 %}🥉{% endif %}
+          {{ r.position }}
+        </td>
+        <td>{{ r.competitor }}</td>
+        <td>{{ r.club }}</td>
+        <td>{{ '%.3f'|format(r.execution) if r.execution is not none else '' }}</td>
+        <td>{{ '%.3f'|format(r.artistry) if r.artistry is not none else '' }}</td>
+        <td>{{ '%.3f'|format(r.difficulty) if r.difficulty is not none else '' }}</td>
+        <td>{{ '%.3f'|format(r.line_penalty) if r.line_penalty is not none else '' }}</td>
+        <td>{{ '%.3f'|format(r.chair_penalty) if r.chair_penalty is not none else '' }}</td>
+        <td>{{ '%.3f'|format(r.diff_penalty) if r.diff_penalty is not none else '' }}</td>
+        <td><strong>{{ '%.3f'|format(r.total) if r.total is not none else '' }}</strong></td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+  </div>
+</section>
+
+
+<section class="card danger-block">
+  <h3>Danger Zone</h3>
+  <form method="post" action="{{ url_for('delete_category_data', slug=cat.slug) }}" class="form">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Password">
+    <button class="btn btn-danger" type="submit" onclick="return confirm('Stergi toate randurile din aceasta categorie?')">Delete current data</button>
+  </form>
+  <p class="muted">Sterge toate inregistrarile din aceasta categorie. Nu afecteaza alte categorii.</p>
+</section>
+
+<section class="card">
+  <h3>Upload to this category</h3>
+  <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data" class="form">
+    <input type="hidden" name="category_slug" value="{{ cat.slug }}">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Password">
+    <label>File (CSV or XLSX)</label>
+    <input type="file" name="file" accept=".csv, .xlsx">
+    <button class="btn btn-primary" type="submit">Upload</button>
+  </form>
+  <p class="muted" style="margin-top:8px">Headers required: POSITION, COMPETITOR, CLUB, EXECUTION, ARTISTRY, DIFFICULTY, LINE PENALTY, CHAIR PENALTY, DIFF PENALTY, TOTAL.</p>
+</section>
+{% endblock %}

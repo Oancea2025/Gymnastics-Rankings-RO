@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Gym Rankings{% endblock %}</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="flag"><img src="{{ url_for('static', filename='ro-flag.svg') }}" alt="RO"></div>
+      <div class="titles">
+        <h1>🏆 {{ settings.get('title','National Gymnastics Rankings – Romania') }}</h1>
+        <p class="subtitle">{{ settings.get('subtitle','Official RENC') }}</p>
+        <p class="meta">
+          <strong>Date:</strong> {{ settings.get('event_date','') or '—' }}
+          &nbsp;&nbsp;
+          <strong>Location:</strong> {{ settings.get('location','') or '—' }}
+        </p>
+      </div>
+      <div class="lang">
+        <a class="chip chip-active" href="#">EN</a>
+        <a class="chip" href="#">RO</a>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn btn-primary" href="{{ url_for('upload') }}">Upload</a>
+      <a class="btn" href="{{ url_for('settings_page') }}">Settings</a>
+      <a class="btn" href="{{ url_for('privacy') }}">Privacy</a>
+      <a class="btn" href="{{ url_for('terms') }}">Terms</a>
+    </div>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for cat,msg in messages %}
+            <div class="flash {{cat}}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="legal" style="display:none">
+      <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener" class="anpc-pill">
+        <span class="ro-mini">🇷🇴</span> SOLUȚIONAREA ALTERNATIVĂ A LITIGIILOR <span class="pill">DETALII</span>
+      </a>
+      <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" class="anpc-pill">
+        SOLUȚIONAREA ONLINE A LITIGIILOR <span class="pill">DETALII</span>
+      </a>
+    </div>
+    <div class="links">
+      <a href="{{ url_for('privacy') }}">Privacy</a> ·
+      <a href="{{ url_for('terms') }}">Terms</a>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='consent.js') }}"></script>
+</body>
+</html>
