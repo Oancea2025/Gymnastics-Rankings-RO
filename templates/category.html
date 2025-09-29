@@ -1,3 +1,12 @@
+
+{% if rows and rows|length > 0 %}
+<form method="post" action="{{ url_for('delete_category_data', slug=cat.slug) }}" onsubmit="return confirm('Sigur stergi toate inregistrarile din aceasta categorie?');" class="delete-form">
+  <input type="password" name="password" placeholder="Parola upload" class="pwd-input">
+  <button type="submit" class="btn btn-danger">Sterge fisierul (toate randurile)</button>
+  <span class="muted">Aceasta actiune sterge toate inregistrarile incarcate pentru aceasta categorie, ca sa poti incarca un fisier nou.</span>
+</form>
+{% endif %}
+
 {% extends 'layout.html' %}
 {% block title %}{{ cat.name }}{% endblock %}
 {% block content %}

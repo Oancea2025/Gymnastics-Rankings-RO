@@ -17,5 +17,18 @@
     <input type="file" name="file" accept=".csv, .xlsx">
     <button class="btn btn-primary" type="submit">Upload</button>
   </form>
+
+<hr class="sep">
+
+<h3>Stergere rapida pentru o categorie</h3>
+<p class="muted">Daca ai incarcat gresit un fisier la o categorie, poti sterge toate randurile din acea categorie aici si apoi re-uploadezi fisierul corect.</p>
+<form method="post" action="{{ url_for('delete_by_name') }}" onsubmit="return confirm('Sigur stergi toate inregistrarile pentru aceasta categorie?');" class="delete-form">
+  <label>Parola (UPLOAD_PASSWORD)</label>
+  <input type="password" name="password" placeholder="Parola upload">
+  <label>Numele categoriei exacte</label>
+  <input type="text" name="category_name" placeholder="ex: Individual Women – Junior">
+  <button type="submit" class="btn btn-danger">Sterge toate randurile din categorie</button>
+</form>
+
 </section>
 {% endblock %}

@@ -393,3 +393,48 @@ if __name__ == "__main__":
 def _allow_head():
     if request.method == "HEAD":
         return ("", 200)
+
+
+@app.route("/category/<slug>/delete", methods=["POST"])
+def delete_category_data(slug):
+    pwd = request.form.get("password","").strip()
+    if pwd != UPLOAD_PASSWORD:
+        flash("Parola incorecta.", "error")
+        return redirect(url_for("category_page", slug=slug))
+    s = SessionLocal()
+    try:
+        cat = s.query(Category).filter_by(slug=slug).first()
+        if not cat:
+            flash("Categoria nu exista.", "error")
+            return redirect(url_for("home"))
+        deleted = s.query(Ranking).filter_by(category_id=cat.id).delete()
+        s.commit()
+        flash(f"Sters {deleted} randuri pentru categoria '{cat.name}'.", "success")
+    finally:
+        s.close()
+    return redirect(url_for("category_page", slug=slug))
+
+
+@app.route("/delete-by-name", methods=["POST"])
+def delete_by_name():
+    pwd = request.form.get("password","").strip()
+    if pwd != UPLOAD_PASSWORD:
+        flash("Parola incorecta.", "error")
+        return redirect(url_for("upload"))
+    name = request.form.get("category_name","").strip()
+    if not name:
+        flash("Completeaza numele categoriei.", "error")
+        return redirect(url_for("upload"))
+    slug = slugify(name)
+    s = SessionLocal()
+    try:
+        cat = s.query(Category).filter_by(slug=slug).first()
+        if not cat:
+            flash("Categoria nu exista.", "error")
+            return redirect(url_for("upload"))
+        deleted = s.query(Ranking).filter_by(category_id=cat.id).delete()
+        s.commit()
+        flash(f"Sters {deleted} randuri pentru categoria '{cat.name}'.", "success")
+    finally:
+        s.close()
+    return redirect(url_for("category_page", slug=slug))

@@ -10,3 +10,10 @@ select{padding:10px;border-radius:10px;border:1px solid var(--border);background
 
 .cat-filter{margin:8px 0 16px}
 .cat-filter select{padding:6px 8px;border-radius:8px}
+
+.btn-danger{background:#d9534f;color:#fff;border:0;padding:10px 14px;border-radius:8px}
+.btn-danger:hover{background:#c9302c}
+.delete-form{margin:16px 0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.delete-form .pwd-input{padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text)}
+
+.sep{border:0;border-top:1px solid var(--border);margin:20px 0}
