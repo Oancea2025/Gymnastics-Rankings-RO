@@ -1,3 +1,7 @@
+
+# Normalize to psycopg v3 driver if DATABASE_URL is plain postgresql://
+if db_url.startswith("postgresql://"):
+    db_url = db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 import os, re, io, csv
 from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import create_engine, Column, Integer, String, Numeric, Text, ForeignKey
@@ -11,11 +15,11 @@ app.secret_key = os.environ.get("FLASK_SECRET", "change-this-secret")
 UPLOAD_PASSWORD = os.environ.get("UPLOAD_PASSWORD", "Ionut2025")
 
 # Database (Render's DATABASE_URL) - fallback to SQLite for local testing
-db_url = os.environ.get("DATABASE_URL", "").replace("postgres://", "postgresql://")
+db_url = os.environ.get("DATABASE_URL", "").replace("postgres://", "postgresql+psycopg://")
 if not db_url:
     db_url = "sqlite:///local.db"
 
-engine = create_engine(db_url, pool_pre_ping=True, future=True)
+connect_args = {"sslmode": "require"}\n# psycopg v3 typically needs SSL on Render\nengine = create_engine(db_url, pool_pre_ping=True, future=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 Base = declarative_base()
 
@@ -192,25 +196,6 @@ def category_page(slug):
     return render_template("category.html", settings=settings, cat=cat, rows=rows)
 
 
-@app.post("/category/<slug>/delete")
-def delete_category_data(slug):
-    pwd = request.form.get("password","").strip()
-    if pwd != UPLOAD_PASSWORD:
-        flash("Incorrect password.", "error")
-        return redirect(url_for("category_page", slug=slug))
-    s = SessionLocal()
-    try:
-        cat = s.query(Category).filter_by(slug=slug).first()
-        if not cat:
-            flash("Category not found.", "error")
-            return redirect(url_for("home"))
-        deleted = s.query(Ranking).filter_by(category_id=cat.id).delete()
-        s.commit()
-        flash(f"Deleted {deleted} rows from '{cat.name}'.", "success")
-    finally:
-        s.close()
-    return redirect(url_for("category_page", slug=slug))
-
 @app.route("/upload", methods=["GET","POST"])
 def upload():
     settings = get_settings()
@@ -238,11 +223,6 @@ def upload():
                 if not cat:
                     cat = Category(slug=slug, name=cat_name)
                     s.add(cat); s.commit(); s.refresh(cat)
-
-            # PATCH: clear previous rankings before insert
-            # Remove existing rows for this category to allow re-upload
-            s.query(Ranking).filter_by(category_id=cat.id).delete()
-            s.commit()
 
             file = request.files.get("file")
             if not file or file.filename == "":

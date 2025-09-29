@@ -46,17 +46,6 @@
   </div>
 </section>
 
-
-<section class="card danger-block">
-  <h3>Danger Zone</h3>
-  <form method="post" action="{{ url_for('delete_category_data', slug=cat.slug) }}" class="form">
-    <label>Password</label>
-    <input type="password" name="password" placeholder="Password">
-    <button class="btn btn-danger" type="submit" onclick="return confirm('Stergi toate randurile din aceasta categorie?')">Delete current data</button>
-  </form>
-  <p class="muted">Sterge toate inregistrarile din aceasta categorie. Nu afecteaza alte categorii.</p>
-</section>
-
 <section class="card">
   <h3>Upload to this category</h3>
   <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data" class="form">

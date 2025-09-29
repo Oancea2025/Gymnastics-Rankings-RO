@@ -6,7 +6,7 @@
 
 <h3>Select Category</h3>
 <form method="get" action="{{ url_for('home') }}" class="cat-filter">
-  <select name="category" class="all-categories-select" onchange="this.form.submit()">
+  <select name="category" onchange="this.form.submit()">
     <option value="" {% if not selected %}selected{% endif %}>All Categories</option>
     {% for cat in all_categories %}
       <option value="{{ cat.slug }}" {% if selected==cat.slug %}selected{% endif %}>{{ cat.name }}</option>

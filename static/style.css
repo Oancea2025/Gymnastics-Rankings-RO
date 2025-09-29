@@ -10,15 +10,3 @@ select{padding:10px;border-radius:10px;border:1px solid var(--border);background
 
 .cat-filter{margin:8px 0 16px}
 .cat-filter select{padding:6px 8px;border-radius:8px}
-
-
-/* PATCH: Larger All Categories dropdown for mobile */
-.all-categories-select { font-size:16px; padding:10px 12px; min-height:44px; }
-@media (max-width: 480px) {
-  .all-categories-select { font-size:17px; padding:12px 14px; min-height:48px; }
-}
-
-/* Buttons */
-.btn.btn-danger { background:#d9534f; color:#fff; border:0; padding:8px 12px; border-radius:8px; }
-.btn.btn-danger:hover { background:#c9302c; }
-.danger-block { border:1px solid #6b1111; background:#2a0f13; }
